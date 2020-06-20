@@ -85,7 +85,7 @@ for ensemble in groupe:
 
     # drawing_blocks.append(drawing_blocks)
 
-def update_color():
+def update_tag():
     untouched = "blue"
     being_touched = "red"
     touched = "gray"
@@ -94,20 +94,30 @@ def update_color():
     for i in range(len(groupe)):
         x_block = xt1
         print(i)
-        if groupe[i]['xo_item'] >= x_block and groupe[i]['xl_item'] <= x_block:
+        if groupe[i]['xl_item'] >= x_block and groupe[i]['xo_item'] <= x_block:
             root.itemconfig(rects[i], tag="being_touched")
-        elif groupe[i]['xo_item']>=x_block and groupe[i]['xl_item'] <= x_block:
+        elif groupe[i]['xl_item'] > x_block and groupe[i]['xo_item'] > x_block:
             root.itemconfig(rects[i], tag="touched")
 
-        print(groupe[i]['xo_item'], x_block, root.gettags(rects[i]))
+        print(groupe[i]['xl_item'], groupe[i]['xo_item'], x_block, root.itemcget(rects[i],"tag"))
+    update_color()
 
+def update_color():
+    for r in rects:
+        if root.itemcget(r, "tag") == "untouched" : 
+            root.itemconfig(r, fill="blue")
+        elif root.itemcget(r, "tag") == "being_touched" : 
+            root.itemconfig(r, fill="red")
+        elif root.itemcget(r, "tag") == "touched" : 
+            root.itemconfig(r, fill="gray")
 #Moving RedLine
 def deplacer():
     global xt1, yt1, xt2, yt2
     xt1-=5
     xt2-=5
     root.coords(laser_print, xt1, yt1, xt2,yt2)
-    update_color()
+    update_tag()
+    
     root.after(50, deplacer)
 
     return
@@ -117,6 +127,7 @@ def deplacer():
 #draw vertical redline
 laser_print=root.create_line(xt1, yt1, xt2, yt2, fill="red")
 rects=[]
+
 #draw rects
 for ensemble in groupe:
     drawing_block = root.create_rectangle(ensemble['xo_item'], ensemble['yo_item'],
