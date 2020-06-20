@@ -42,12 +42,12 @@ g = {
     }
 
 
-groupe = [a,d, b, c, g, e, f]
+groupe = [a, d, b, c, g, e, f, g]
 
 xt1 = 800
-xt2= 800
-yt1=720
-yt2=0
+xt2 = 800
+yt1 = 720
+yt2 = 0
 
 master = Tk()
 root = Canvas(master, width=800, height=720)
@@ -85,60 +85,55 @@ for ensemble in groupe:
 
     # drawing_blocks.append(drawing_blocks)
 
-
-def update_color():
+def update_tag():
     untouched = "blue"
     being_touched = "red"
     touched = "gray"
-    block_color = untouched
+    block_color=untouched
 
     for i in range(len(groupe)):
         x_block = xt1
-        bbb = groupe[i]
-        if bbb['xo_item'] >= x_block and bbb['xl_item'] <= x_block:
-            block_color=being_touched
-        elif bbb['xo_item'] > x_block and bbb['xl_item'] > x_block:
-            block_color=touched
-        elif bbb['xo_item'] < x_block and bbb['xl_item'] < x_block:
-            block_color=untouched
-    
-    root.itemconfig('blocks', fill = block_color)
-    root.after(50,update_color)
+        print(i)
+        if groupe[i]['xl_item'] >= x_block and groupe[i]['xo_item'] <= x_block:
+            root.itemconfig(rects[i], tag="being_touched")
+        elif groupe[i]['xl_item'] > x_block and groupe[i]['xo_item'] > x_block:
+            root.itemconfig(rects[i], tag="touched")
+    update_color()
 
-
+def update_color():
+    for r in rects:
+        if root.itemcget(r, "tag") == "untouched" : 
+            root.itemconfig(r, fill="blue")
+        elif root.itemcget(r, "tag") == "being_touched" : 
+            root.itemconfig(r, fill="red")
+        elif root.itemcget(r, "tag") == "touched" : 
+            root.itemconfig(r, fill="gray")
 #Moving RedLine
 def deplacer():
     global xt1, yt1, xt2, yt2
     xt1-=5
     xt2-=5
     root.coords(laser_print, xt1, yt1, xt2,yt2)
+    update_tag()
+    
+    root.after(50, deplacer)
 
-    update_color()
-    root.after(50,deplacer)
     return
-
 
 
 
 #draw vertical redline
 laser_print=root.create_line(xt1, yt1, xt2, yt2, fill="red")
-i=0
+rects=[]
+
+#draw rects
 for ensemble in groupe:
-    i+=2
-    print(ensemble['xo_item']+i)
+    drawing_block = root.create_rectangle(ensemble['xo_item'], ensemble['yo_item'],
+                                 ensemble['xl_item'], ensemble['yl_item'], tag="untouched")
+    rects.append(drawing_block)
 
-
-for ensemble in groupe:
-    print(ensemble)
-    x_block=xt1
-
-    drawing_block = root.create_rectangle(ensemble['xo_item'], ensemble['yo_item'], ensemble['xl_item'], ensemble['yl_item'], fill=block_color, tag="blocks")
-  
 deplacer()
-   
-
-
 
 mainloop()
 
-print("TEST", drawing_block)
+  
