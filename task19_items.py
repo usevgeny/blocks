@@ -98,8 +98,6 @@ def update_tag():
             root.itemconfig(rects[i], tag="being_touched")
         elif groupe[i]['xl_item'] > x_block and groupe[i]['xo_item'] > x_block:
             root.itemconfig(rects[i], tag="touched")
-
-        print(groupe[i]['xl_item'], groupe[i]['xo_item'], x_block, root.itemcget(rects[i],"tag"))
     update_color()
 
 def update_color():
